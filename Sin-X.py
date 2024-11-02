@@ -19,4 +19,4 @@ while i <= 19:
     k *= -1
     i += 2
 
-print('%.10f' % res)
+print('%.2f' % res)
