@@ -14,7 +14,7 @@ k = 1.0
 i = 1.0
 res = 0.0
 
-while i <= 19:
+while i <= 10:
     res += k * ((r ** i) / Fact(i))
     k *= -1
     i += 2
