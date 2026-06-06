@@ -1,75 +1,109 @@
 import random
 
-# ====================== regular mergesort ========================
+# ====================== 3 div mergesort ========================
 
-
-def merge(left, right, lsize, rsize):
+def merge2(left, right, lsize, rsize):
     res = []
     leftindex = 0
     rightindex = 0
 
-    while rightindex != rsize and leftindex != lsize:
-
-
+    while leftindex < lsize and rightindex < rsize:
         if right[rightindex] < left[leftindex]:
+            res.append(right[rightindex])
+            rightindex += 1
+        else:
+            res.append(left[leftindex])
+            leftindex += 1
+
+    res.extend(left[leftindex:])
+    res.extend(right[rightindex:])
+    return res
+
+
+def merge(left, mid, right, lsize, msize, rsize):
+    res = []
+    leftindex = 0
+    midindex = 0
+    rightindex = 0
+
+    # print(left, mid, right)
+    # print(lsize, msize, rsize)
+
+    while rightindex != rsize and leftindex != lsize and midindex != msize:
+
+        # print(leftindex, midindex, rightindex)
+
+        if right[rightindex] <= left[leftindex] and right[rightindex] <= mid[midindex]:
 
             res.append(right[rightindex])
             rightindex += 1
             if rightindex == rsize:
-                res.extend(left[leftindex: lsize])
+                res.extend(merge2(left[leftindex:], mid[midindex:], lsize - leftindex, msize - midindex))
+                break
+        
+        elif mid[midindex] <= right[rightindex] and mid[midindex] <= left[leftindex]:
+
+            res.append(mid[midindex])
+            # print(mid[midindex], res) #================
+            midindex += 1
+            if midindex == msize:
+                res.extend(merge2(left[leftindex:], right[rightindex:], lsize - leftindex, rsize - rightindex))
                 break
 
-
-        else:
+        elif left[leftindex] <= right[rightindex] and left[leftindex] <= mid[midindex]:
 
             res.append(left[leftindex])
             leftindex += 1
             if leftindex == lsize:
-                res.extend(right[rightindex: rsize])
+                res.extend(merge2(right[rightindex:], mid[midindex:], rsize - rightindex, msize - midindex))
                 break
 
     return res
 
 
 
-def mergesort(list, n):
-    k = int(n /2)
+def mergesort(arr, n):
+    k = int(n /3)
+    w = n - k
     left = []
+    mid = []
     right = []
 
-    if n == 1:
-        return list
+    
+    if n <= 1:
+        return arr
     
     if n == 2:
-        if list[0] > list[1]:
-            list[0] += list[1]
-            list[1] = list[0] - list[1]
-            list[0] -= list[1]
-        return list
+        if arr[0] > arr[1]:
+            arr[0], arr[1] = arr[1], arr[0]
+        return arr
     
 
     for i in range(n):
         if i < k:
-            left.append(list[i])
+            left.append(arr[i])
+        elif i >= k and i < w:
+            mid.append(arr[i])
         else:
-            right.append(list[i])
+            right.append(arr[i])
 
 
     left = mergesort(left, len(left))
+    mid = mergesort(mid, len(mid))
     right = mergesort(right, len(right))
-    return merge(left, right, k, n - k)
+    return merge(left, mid, right, k, w - k, n - w)
 
 
 
 
 n = int(input("list lengh: "))
-list = []
+arr = []
 
 for i in range(n):
-    list.append(random.randint(0, n * 2))
+    arr.append(random.randint(0, n * 2))
 
-print(list, "\n")
+print(arr, "\n")
 
-list = mergesort(list, n)
+arr = mergesort(arr, n)
 
-print(list)
+print(arr)
